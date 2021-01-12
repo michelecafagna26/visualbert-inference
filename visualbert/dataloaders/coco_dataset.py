@@ -80,7 +80,7 @@ class COCODataset(Dataset):
         self.pretraining = args.pretraining
         self.masked_lm_prob = args.get("masked_lm_prob", 0.15)
 
-        with open(os.path.join('./cocoontology.json'), 'r') as f:
+        with open(os.path.join(self.data_root, 'cocoontology.json'), 'r') as f:
             coco = json.load(f)
         self.coco_objects = ['__background__'] + [x['name'] for k, x in sorted(coco.items(), key=lambda x: int(x[0]))]
         self.coco_obj_to_ind = {o: i for i, o in enumerate(self.coco_objects)}

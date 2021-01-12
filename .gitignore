@@ -6,3 +6,7 @@ __pycache__/
 
 # Environments
 venv/
+
+# fodlers
+X_COCO/
+XX/

@@ -1,6 +1,6 @@
 {
   "dataset": "coco",
-  "data_root": "X_COCO", //Please replace this with the actual corresponding folder
+  "data_root": "visualbert-inference/X_COCO", //Please replace this with the actual corresponding folder
 
   "image_feature_type": "vqa_fix_100",
   "image_screening_parameters": null,
@@ -32,7 +32,7 @@
   "grad_norm": 1.0,
   "gradient_accumulation_steps": 1,
 
-  "restore_bin":  null,  //Specify which model to initialize from
+  "restore_bin":  "visualbert-inference/X_COCO/vcr_coco_pre_train.th",  //Specify which model to initialize from
   
   "model":
   {
