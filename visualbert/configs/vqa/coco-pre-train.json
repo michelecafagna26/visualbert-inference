@@ -14,14 +14,14 @@
   "max_seq_length": 128,
   "bert_model_name": "bert-base-uncased",
   "do_lower_case": true,
-  "train_batch_size": 48,
-  "eval_batch_size": 48,
+  "train_batch_size": 1,
+  "eval_batch_size": 1,
 
-  "pretraining": true,
-  "masked_lm_prob": 0.15,
-  "two_sentence": true,
-  "no_next_sentence": false,
-  "false_caption_ratio": 0.5,
+  "pretraining": false,
+  "masked_lm_prob": 0.0,
+  "two_sentence": false,
+  "no_next_sentence": true,
+  "false_caption_ratio": 0.0,
 
   // Optimizer stuff
   "limit_trainset_size": -1,
@@ -39,6 +39,7 @@
     "type": "VisualBERTFixedImageEmbedding",
     "special_visual_initialize": true,
     "training_head_type": "pretraining",
-    "visual_embedding_dim": 2048
+    "visual_embedding_dim": 2048,
+    "output_attention_weights": true
   }
 }
