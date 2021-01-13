@@ -7,6 +7,7 @@ __pycache__/
 # Environments
 venv/
 
-# fodlers
+# folders
 X_COCO/
 XX/
+/out_attn
