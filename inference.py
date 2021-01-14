@@ -20,40 +20,19 @@ from tqdm import tqdm
 
 from allennlp.nn.util import device_mapping
 
-
 from visualbert.utils.pytorch_misc import time_batch, save_checkpoint, clip_grad_norm, \
     restore_checkpoint, print_para, restore_best_checkpoint, restore_checkpoint_flexible, load_state_dict_flexible, compute_score_with_logits
 
 from visualbert.dataloaders.vcr import VCR, VCRLoader
+from pytorch_pretrained_bert.optimization import BertAdam
+
 try:
     from visualbert.dataloaders.coco_dataset import COCODataset
 except:
     print("Import COCO dataset failed.")
-try:   
-    from visualbert.dataloaders.nlvr_dataset import NLVRDataset
-except:
-    print("Import NLVR2 dataset failed.")
-try:
-    from visualbert.dataloaders.vqa_dataset import VQADataset
-except:
-    print("Import VQA dataset failed.")
-try:
-    from visualbert.dataloaders.flickr_dataset import Flickr30kFeatureDataset
-except:
-    print("Import Flickr30K dataset failed.")
-
-from pytorch_pretrained_bert.optimization import BertAdam
 
 import logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', level=logging.DEBUG)
-
-'''import resource
-rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
-try:
-    resource.setrlimit(resource.RLIMIT_NOFILE, (40960, rlimit[1]))
-    print("Setting to 40960")
-except:
-    resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))'''
 
 from allennlp.models import Model
 from visualbert.models.model_wrapper import ModelWrapper
@@ -124,7 +103,7 @@ if NUM_GPUS == 0:
 def _to_gpu(td):
     if args.get("fp16", False):
         _to_fp16(td)
-
+nvidi
     if NUM_GPUS > 1:
         return td
     for k in td:
@@ -149,32 +128,9 @@ loader_params = {'batch_size': args.train_batch_size // NUM_GPUS, 'num_gpus':NUM
 
 def get_dataset_loader(args, dataset_name):
     # The VCR approach toward
-    if  dataset_name == "vcr":
-        train, val, test = VCR.splits(
-                                  mode='rationale' if args.rationale else 'answer',
-                                  only_use_relevant_dets = args.get('only_use_relevant_dets', True),
-                                  do_lower_case = args.do_lower_case,
-                                  bert_model_name = args.bert_model_name,
-                                  max_seq_length = args.max_seq_length,
-                                  pretraining = args.pretraining,
-                                  pretraining_include_qa_and_qar = args.pretraining_include_qa_and_qar,
-                                  complete_shuffle = args.get("complete_shuffle", False),
-                                  use_alignment = args.get('use_alignment', False),
-                                  add_all_features = args.add_all_features,
-                                  answer_labels_path = args.get("answer_labels_path", None),
-                                  vcr_annots_dir = args.vcr_annots_dir,
-                                  vcr_image_dir = args.vcr_image_dir
-                                  )
-    elif dataset_name == "coco":
+
+    if dataset_name == "coco":
         train, val, test = COCODataset.splits(args)
-    elif dataset_name == "nlvr":
-        train, val, test = NLVRDataset.splits(args)
-    elif dataset_name == "vqa":
-        train, val, test = VQADataset.splits(args)
-    elif dataset_name == "wiki":
-        train, val, test = WikiDataset.splits(args)
-    elif dataset_name == "flickr":
-        train, val, test = Flickr30kFeatureDataset.splits(args)
     else:
         assert(0)
 
@@ -194,9 +150,6 @@ def get_dataset_loader(args, dataset_name):
 
 
 train_loader, val_loader, test_loader, train_set_size = get_dataset_loader(args, args.dataset)
-
-
-ARGS_RESET_EVERY = args.get("print_every", 100)
 
 
 train_model = ModelWrapper(args, train_set_size)
@@ -223,28 +176,10 @@ param_shapes = print_para(train_model.model)
 
 print("########### Starting from {}".format(start_epoch))
 
-num_batches = 0
-    
-stop_epoch = args.num_train_epochs
-
-save_every = args.get("save_every", None)
-
 try:
     ### This is the inference part
-    val_probs = []
-    val_labels = []
-    val_size = 0.0
-    val_loss_sum = 0.0
-
-    val_acc = 0.0
-    val_acc_upper = 0.0
-    val_instance_counter = 0.0
-
-    val_next_sentence_loss_sum = 0.0
 
     train_model.eval()
-
-    val_counter = 0
 
     for i, batch in enumerate(val_loader):
         with torch.no_grad():

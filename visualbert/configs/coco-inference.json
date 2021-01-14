@@ -7,7 +7,6 @@
 
   "num_workers": 4,
   "val_workers": 2,
-  "fp16" : true,
 
   "expand_coco": true,
   "exclude_minival": true,
