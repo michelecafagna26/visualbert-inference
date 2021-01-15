@@ -103,7 +103,7 @@ if NUM_GPUS == 0:
 def _to_gpu(td):
     if args.get("fp16", False):
         _to_fp16(td)
-nvidi
+
     if NUM_GPUS > 1:
         return td
     for k in td:
@@ -187,7 +187,6 @@ try:
             tokens = [val_loader.dataset.tokenizer.ids_to_tokens[i] for i in batch['bert_input_ids'][0].tolist()]
             batch = _to_gpu(batch)
             output_dict = train_model.step(batch, eval_mode = True)
-            print(output_dict.keys())
 
             index = val_loader.dataset.items[i]['image_id']
             outfile_name = "COCO_val2014_000000{}.out.npz".format(index)
